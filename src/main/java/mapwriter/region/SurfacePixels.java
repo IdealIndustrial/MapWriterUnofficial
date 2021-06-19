@@ -3,6 +3,7 @@ package mapwriter.region;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.Exception;
 import java.util.Arrays;
 
 import javax.imageio.ImageIO;
@@ -140,6 +141,10 @@ public class SurfacePixels {
 		try {
 			img = ImageIO.read(filename);
 		} catch (IOException e) {
+			img = null;
+		} catch (Exception e) {
+			// TBD: throw special exception and regenerate broken file it the outer scope
+			RegionManager.logError("loadImage: error: could not load image from '%s': %s", filename, e.toString());
 			img = null;
 		}
 		int[] pixels = null;

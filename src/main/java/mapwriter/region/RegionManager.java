@@ -126,16 +126,15 @@ public class RegionManager {
 	public void rebuildRegions(int xStart, int zStart, int w, int h, int dimension) {
 		// read all zoom level 0 regions
 		// then find all regions with a backing image at zoom level 0
+
+		int xBeg = xStart & Region.MASK;
+		int zBeg = zStart & Region.MASK;
+		int xEnd = (xStart + w - 1 + Region.SIZE) & Region.MASK;
+		int zEnd = (zStart + h - 1 + Region.SIZE) & Region.MASK;
+		logInfo("rebuilding regions from [%d, %d] to (%d, %d)", xBeg, zBeg, xEnd, zEnd);
 		
-		xStart &= Region.MASK;
-		zStart &= Region.MASK;
-		w = (w + Region.SIZE) & Region.MASK;
-		h = (h + Region.SIZE) & Region.MASK;
-		
-		logInfo("rebuilding regions from (%d, %d) to (%d, %d)", xStart, zStart, xStart + w, zStart + h);
-		
-		for (int rX = xStart; rX < (xStart + w); rX += Region.SIZE) {
-			for (int rZ = zStart; rZ < (zStart + h); rZ += Region.SIZE) {
+		for (int rX = xBeg; rX < xEnd; rX += Region.SIZE) {
+			for (int rZ = zBeg; rZ < zEnd; rZ += Region.SIZE) {
 				Region region = this.getRegion(rX, rZ, 0, dimension);
 				if (this.regionFileCache.regionFileExists(rX, rZ, dimension)) {
 					region.clear();
